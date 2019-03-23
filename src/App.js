@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Image, StyleSheet, Switch, Text, View } from 'react-native';
 import { getWeatherForecast } from './api'
 
+import WeatherForecast from './components/WeatherForecast'
+
 export default class App extends Component {
 
   state = {
@@ -17,7 +19,8 @@ export default class App extends Component {
     const lattitude = '-23.562880'
     const longitude = '-46.654659'
 
-    this.setState({ ...await getWeatherForecast(lattitude, longitude) }, () => console.log(this.state))
+    this.setState({ ...await getWeatherForecast(lattitude, longitude) },
+      () => this.setState({ selectedForecast: this.state.celsiusForecast }, () => console.log(this.state.selectedForecast)))
 
   }
 
@@ -37,7 +40,7 @@ export default class App extends Component {
 
         <CurrentLocationMap />
 
-        <WeatherForecast />
+        <WeatherForecast forecastData={this.state.selectedForecast} />
 
         <SelectTempScale label='Celsius / Fahrenheit' switchValue={this.state.switchValue} toggleSwitch={this.toggleSwitch} />
       </View>
@@ -79,38 +82,3 @@ const CurrentLocationMap = props => (
     </View>
   </View>
 )
-
-const WeatherForecast = props => {
-
-  const marginText = 5
-
-  return (
-    <View style={{
-      paddingHorizontal: 10,
-      borderWidth: 1,
-      borderColor: '#000'
-    }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 5, borderBottomWidth: 1, borderColor: '#AAA' }}>
-        <Text style={{ fontSize: 18, margin: marginText }}>22/05</Text>
-        <Text style={{ fontSize: 18, margin: marginText }}>18°</Text>
-        <Image source={{ uri: 'https://www.metaweather.com/static/img/weather/png/lc.png' }} style={{ width: 30, height: 30, marginRight: 5 }} />
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 5, borderBottomWidth: 1, borderColor: '#AAA' }}>
-        <Text style={{ fontSize: 18, margin: marginText }}>22/05</Text>
-        <Text style={{ fontSize: 18, margin: marginText }}>18°</Text>
-        <Image source={{ uri: 'https://www.metaweather.com/static/img/weather/png/lc.png' }} style={{ width: 30, height: 30, marginRight: 5 }} />
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 5, borderBottomWidth: 1, borderColor: '#AAA' }}>
-        <Text style={{ fontSize: 18, margin: marginText }}>22/05</Text>
-        <Text style={{ fontSize: 18, margin: marginText }}>18°</Text>
-        <Image source={{ uri: 'https://www.metaweather.com/static/img/weather/png/lc.png' }} style={{ width: 30, height: 30, marginRight: 5 }} />
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 5 }}>
-        <Text style={{ fontSize: 18, margin: marginText }}>22/05</Text>
-        <Text style={{ fontSize: 18, margin: marginText }}>18°</Text>
-        <Image source={{ uri: 'https://www.metaweather.com/static/img/weather/png/lc.png' }} style={{ width: 30, height: 30, marginRight: 5 }} />
-      </View>
-
-    </View>
-  )
-}
