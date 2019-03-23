@@ -1,7 +1,30 @@
 import React, { Component } from 'react';
 import { Image, StyleSheet, Switch, Text, View } from 'react-native';
+import { getWeatherForecast } from './api'
 
 export default class App extends Component {
+
+  state = {
+    switchValue: true,
+    cityTitle: '',
+    fahrenreitForecast: [],
+    celsiusForecast: [],
+    selectedForecast: []
+  }
+
+  async componentDidMount() {
+    // São Paulo geolocation
+    const lattitude = '-23.562880'
+    const longitude = '-46.654659'
+
+    this.setState({ ...await getWeatherForecast(lattitude, longitude) }, () => console.log(this.state))
+
+  }
+
+  toggleSwitch = (value) => {
+    this.setState({ switchValue: value })
+    console.log('Switch is: ' + value)
+  }
 
   render() {
     return (
@@ -16,7 +39,7 @@ export default class App extends Component {
 
         <WeatherForecast />
 
-        <SelectTempScale label='Celsius / Fahrenheit' />
+        <SelectTempScale label='Celsius / Fahrenheit' switchValue={this.state.switchValue} toggleSwitch={this.toggleSwitch} />
       </View>
     );
   }
@@ -33,7 +56,13 @@ const SelectTempScale = props => (
     <Text>{props.label}</Text>
     <Switch
       onValueChange={props.toggleSwitch}
-      value={props.switchValue} />
+      value={props.switchValue}
+      trackColor={{
+        false: 'gray',
+        true: 'blue'
+      }}
+      thumbColor='blue'
+    />
   </View>
 )
 
