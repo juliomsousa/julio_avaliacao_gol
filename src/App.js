@@ -51,10 +51,10 @@ export default class App extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: 'space-between' }}>
+      <View style={styles.container}>
 
-        <View style={{ justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#000' }} >
-          <Text style={{ fontSize: 25 }} >{this.state.cityTitle}</Text>
+        <View style={styles.header} >
+          <Text style={{ fontSize: 25 }}>{this.state.cityTitle}</Text>
           <Text style={{ fontSize: 25 }}>{this.state.currentTemperature}</Text>
         </View>
 
@@ -81,7 +81,7 @@ const SelectTempScale = props => (
       onValueChange={props.toggleSwitch}
       value={props.switchValue}
       trackColor={{
-        false: 'gray',
+        false: 'green',
         true: 'blue'
       }}
       thumbColor='blue'
@@ -102,3 +102,18 @@ const CurrentLocationMap = props => (
     </View>
   </View>
 )
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 10
+  },
+  header: {
+    paddingVertical: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#000'
+  }
+})
