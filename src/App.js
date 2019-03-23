@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, StyleSheet, Switch, Text, View } from 'react-native';
+import { StyleSheet, Switch, Text, View } from 'react-native';
 import { getWeatherForecast } from './api'
 
 import WeatherForecast from './components/WeatherForecast'
@@ -7,8 +7,10 @@ import WeatherForecast from './components/WeatherForecast'
 export default class App extends Component {
 
   state = {
-    switchValue: true,
+    switchValue: false,
     cityTitle: '',
+    currentTemperature: '',
+    selectedScale: 'celsius',
     fahrenreitForecast: [],
     celsiusForecast: [],
     selectedForecast: []
@@ -18,15 +20,33 @@ export default class App extends Component {
     // São Paulo geolocation
     const lattitude = '-23.562880'
     const longitude = '-46.654659'
+    const weatherForecast = await getWeatherForecast(lattitude, longitude)
 
-    this.setState({ ...await getWeatherForecast(lattitude, longitude) },
-      () => this.setState({ selectedForecast: this.state.celsiusForecast }, () => console.log(this.state.selectedForecast)))
+    this.setState({ ...weatherForecast }, () => this.setDisplayedScale(this.state.selectedScale))
+  }
 
+  getForecastShowRange = (forecastList, range) => forecastList.slice(0, range)
+
+  getTemperatureMean = (minTemp, maxTemp) => Math.round((minTemp + maxTemp) / 2)
+
+  setDisplayedScale = (scale) => {
+    if (scale === 'celsius') {
+      this.setState({ selectedForecast: this.getForecastShowRange(this.state.celsiusForecast, 4) }, this.setTodayTemperature)
+    } else {
+      this.setState({ selectedForecast: this.getForecastShowRange(this.state.fahrenreitForecast, 4) }, this.setTodayTemperature)
+    }
+  }
+
+  setTodayTemperature = () => {
+    this.setState({
+      currentTemperature: `${this.getTemperatureMean(this.state.selectedForecast[0].minTemp, this.state.selectedForecast[0].maxTemp)}°`
+    })
   }
 
   toggleSwitch = (value) => {
+    const selectedScale = value ? 'fahrenheit' : 'celsius'
+    this.setDisplayedScale(selectedScale)
     this.setState({ switchValue: value })
-    console.log('Switch is: ' + value)
   }
 
   render() {
@@ -34,8 +54,8 @@ export default class App extends Component {
       <View style={{ flex: 1, justifyContent: 'space-between' }}>
 
         <View style={{ justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#000' }} >
-          <Text style={{ fontSize: 25 }} >Nome da Cidade</Text>
-          <Text style={{ fontSize: 25 }}>18°</Text>
+          <Text style={{ fontSize: 25 }} >{this.state.cityTitle}</Text>
+          <Text style={{ fontSize: 25 }}>{this.state.currentTemperature}</Text>
         </View>
 
         <CurrentLocationMap />
