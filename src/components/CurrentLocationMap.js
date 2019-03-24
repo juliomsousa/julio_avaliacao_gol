@@ -65,7 +65,7 @@ export default class CurrentLocationMap extends Component {
 		return (
 			<View style={styles.container}>
 				<MapView
-					style={{ height: 200, width: '100%' }}
+					style={{ height: '100%', width: '100%', }}
 
 					ref={map => { this.map = map }}
 					region={{ ...region, ...this.props.coordinates }}
@@ -98,7 +98,10 @@ export default class CurrentLocationMap extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		borderWidth: 1,
-		borderColor: '#000'
+		height: 200,
+		borderRadius: 10,
+		overflow: 'hidden',
+		borderColor: 'gray',
+		borderWidth: 0.5
 	}
 })

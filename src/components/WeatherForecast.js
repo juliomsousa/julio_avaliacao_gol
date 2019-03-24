@@ -1,8 +1,11 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import moment from 'moment'
+import commonStyles from '../commonStyles'
 
 export default props => {
+
+	emptyList = [{}, {}, {}, {}]
 
 	listItem = (item, index, last) => (
 		<View style={[styles.listItem, { borderBottomWidth: last ? 0 : 1 }]} key={index}>
@@ -22,48 +25,61 @@ export default props => {
 	return (
 		<View style={styles.container}>
 			{
-				props.forecastData.map((day, index, arr) => {
-					const last = (index === arr.length - 1) ? true : false
-					console.log(day)
-					return listItem(day, index, last)
-				})
+				props.forecastData.length ?
+					props.forecastData.map((day, index, arr) => {
+						const last = (index === arr.length - 1) ? true : false
+						//console.log(day)
+						return listItem(day, index, last)
+					})
+					:
+					emptyList.map((item, index, arr) => {
+						const last = (index === arr.length - 1) ? true : false
+						const emptyObj = { date: '0000-00-00', minTemp: '0', maxTemp: '0', stateIcon: 'http://' }
+						return listItem(emptyObj, index, last)
+					})
 			}
 		</View>
 	)
 }
 
-
 const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 10,
-		borderWidth: 1,
-		borderColor: '#000'
+		borderWidth: 0.5,
+		borderColor: 'gray',
+		borderRadius: 10
 	},
 	listItem: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingVertical: 5,
-		borderColor: '#AAA'
+		borderColor: '#AAA',
 	},
 	minMaxContainer: {
 		flexDirection: 'row'
 	},
 	dateText: {
 		fontSize: 18,
+		fontFamily: commonStyles.fontFamily,
+		color: commonStyles.colors.fontColor,
 		margin: 5
 	},
 	tempValue: {
 		fontSize: 18,
+		fontFamily: commonStyles.fontFamily,
+		color: commonStyles.colors.fontColor,
 		margin: 5,
 		marginHorizontal: 8
 	},
 	tempMinMax: {
 		fontSize: 14,
+		fontFamily: commonStyles.fontFamily,
+		color: commonStyles.colors.fontColor
 	},
 	stateIcon: {
 		width: 30,
 		height: 30,
-		marginRight: 5
+		marginRight: 5,
 	}
 })
