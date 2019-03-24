@@ -15,7 +15,7 @@ export default props => {
 					<Text style={styles.tempMinMax}>Min</Text> {Math.round(item.minTemp)}°
 				</Text>
 				<Text style={styles.tempValue}>
-					{Math.round(item.maxTemp)}º <Text style={styles.tempMinMax}>Max</Text>
+					{Math.round(item.maxTemp)}° <Text style={styles.tempMinMax}>Max</Text>
 				</Text>
 			</View>
 			<Image source={{ uri: item.weatherStateIcon }} style={styles.stateIcon} />

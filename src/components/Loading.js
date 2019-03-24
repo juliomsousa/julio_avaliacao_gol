@@ -22,7 +22,7 @@ export default props => (
 						<ActivityIndicator size='large' color={props.loadColor} />
 					</View>
 
-					<Text style={[styles.message, { color: props.textColor }]}>Obtendo Dados</Text>
+					<Text style={[styles.message, { color: props.textColor }]}>{props.feedbackText}</Text>
 
 				</View>
 

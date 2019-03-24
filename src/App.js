@@ -14,6 +14,7 @@ export default class App extends Component {
   state = {
     switchValue: false,
     waitingAPIResponse: true,
+    feedbackModalMessage: 'Obtendo Dados',
     cityTitle: '',
     currentTemperature: '',
     selectedScale: 'celsius',
@@ -28,20 +29,25 @@ export default class App extends Component {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        console.log(position.coords)
+        //console.log(position.coords)
         const { latitude, longitude } = position.coords
 
         getWeatherForecast(latitude, longitude).then(forecast => {
-          console.log('res', forecast)
-          this.setState({ ...forecast, coordinates: { latitude, longitude }, waitingAPIResponse: false }, () => {
-            console.log('coordinatesApp:', this.state.coordinates)
-            this.setDisplayedScale(this.state.selectedScale)
-          })
+          //console.log('res', forecast)
+
+          forecast.error === null
+            ?
+            this.setState({ ...forecast, coordinates: { latitude, longitude }, waitingAPIResponse: false }, () => {
+              //console.log('coordinatesApp:', this.state.coordinates)
+              this.setDisplayedScale(this.state.selectedScale)
+            })
+            :
+            this.setState({ feedbackModalMessage: 'Não foi possível obter os dados. Tente novamente.' })
         })
 
       },
       (error) => {
-        console.log(error)
+        //console.log(error)
       },
       {
         enableHighAccuracy: false,
@@ -82,6 +88,7 @@ export default class App extends Component {
 
         <Loading
           isVisible={this.state.waitingAPIResponse}
+          feedbackText={this.state.feedbackModalMessage}
           backgroundColor={'#d7d7d7'}
           loadColor={'#eb7302'}
           textColor={'#eb7302'}
