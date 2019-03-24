@@ -10,7 +10,8 @@
     "axios": "^0.18.0",
     "moment": "^2.24.0",
     "react": "16.8.3",
-    "react-native": "0.59.1"
+    "react-native": "0.59.1",
+    "react-native-maps": "https://github.com/react-native-community/react-native-maps.git#6ad2ffcf6a038103202e13f0e03921b97b57dcce"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",

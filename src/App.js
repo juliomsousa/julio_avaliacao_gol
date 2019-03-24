@@ -3,6 +3,7 @@ import { StyleSheet, Switch, Text, View } from 'react-native';
 import { getWeatherForecast } from './api'
 
 import WeatherForecast from './components/WeatherForecast'
+import CurrentLocationMap from './components/CurrentLocationMap'
 
 export default class App extends Component {
 
@@ -13,16 +14,35 @@ export default class App extends Component {
     selectedScale: 'celsius',
     fahrenreitForecast: [],
     celsiusForecast: [],
-    selectedForecast: []
+    selectedForecast: [],
+    coordinates: {}
   }
 
   async componentDidMount() {
-    // São Paulo geolocation
-    const lattitude = '-23.562880'
-    const longitude = '-46.654659'
-    const weatherForecast = await getWeatherForecast(lattitude, longitude)
 
-    this.setState({ ...weatherForecast }, () => this.setDisplayedScale(this.state.selectedScale))
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log(position.coords)
+        const { latitude, longitude } = position.coords
+
+        getWeatherForecast(latitude, longitude).then(forecast => {
+          console.log('res', forecast)
+          this.setState({ ...forecast, coordinates: { latitude, longitude } }, () => {
+            console.log('coordinatesApp:', this.state.coordinates)
+            this.setDisplayedScale(this.state.selectedScale)})
+        })
+
+      },
+      (error) => {
+        console.log(error)
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 5000
+      },
+    )
+
   }
 
   getForecastShowRange = (forecastList, range) => forecastList.slice(0, range)
@@ -43,6 +63,7 @@ export default class App extends Component {
     })
   }
 
+
   toggleSwitch = (value) => {
     const selectedScale = value ? 'fahrenheit' : 'celsius'
     this.setDisplayedScale(selectedScale)
@@ -58,7 +79,7 @@ export default class App extends Component {
           <Text style={{ fontSize: 25 }}>{this.state.currentTemperature}</Text>
         </View>
 
-        <CurrentLocationMap />
+        <CurrentLocationMap coordinates={this.state.coordinates} />
 
         <WeatherForecast forecastData={this.state.selectedForecast} />
 
@@ -86,20 +107,6 @@ const SelectTempScale = props => (
       }}
       thumbColor='blue'
     />
-  </View>
-)
-
-const CurrentLocationMap = props => (
-  <View style={{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#000'
-  }}>
-    <View style={{ height: 150, width: '100%', backgroundColor: '#AAA' }}>
-
-    </View>
   </View>
 )
 
