@@ -63,9 +63,9 @@ export default class CurrentLocationMap extends Component {
 	render() {
 		const { region } = this.state
 		return (
-			<View style={styles.container}>
+			<View style={[styles.container, { ...this.props.style }]}>
 				<MapView
-					style={{ height: '100%', width: '100%', }}
+					style={{ height: '100%', width: '100%', opacity: this.props.mapOpacity, }}
 
 					ref={map => { this.map = map }}
 					region={{ ...region, ...this.props.coordinates }}
@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
 		height: 200,
 		borderRadius: 10,
 		overflow: 'hidden',
-		borderColor: 'gray',
-		borderWidth: 0.5
+		borderWidth: 1,
 	}
 })

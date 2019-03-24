@@ -8,7 +8,7 @@ export default props => {
 	emptyList = [{}, {}, {}, {}]
 
 	listItem = (item, index, last) => (
-		<View style={[styles.listItem, { borderBottomWidth: last ? 0 : 1 }]} key={index}>
+		<View style={[styles.listItem, { borderBottomWidth: last ? 0 : 0.5 }]} key={index}>
 			<Text style={styles.dateText}>{moment(item.date).format('DD/MM')}</Text>
 			<View style={styles.minMaxContainer} >
 				<Text style={styles.tempValue}>
@@ -34,7 +34,7 @@ export default props => {
 					:
 					emptyList.map((item, index, arr) => {
 						const last = (index === arr.length - 1) ? true : false
-						const emptyObj = { date: '0000-00-00', minTemp: '0', maxTemp: '0', stateIcon: 'http://' }
+						const emptyObj = { date: '2000-01-01', minTemp: '0', maxTemp: '0', stateIcon: 'http://' }
 						return listItem(emptyObj, index, last)
 					})
 			}
@@ -45,16 +45,15 @@ export default props => {
 const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 10,
-		borderWidth: 0.5,
-		borderColor: 'gray',
-		borderRadius: 10
+		borderRadius: 10,
+		backgroundColor: commonStyles.colors.backgroundColor2
 	},
 	listItem: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingVertical: 5,
-		borderColor: '#AAA',
+		borderColor: commonStyles.colors.ligtColor,
 	},
 	minMaxContainer: {
 		flexDirection: 'row'

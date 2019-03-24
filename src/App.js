@@ -1,15 +1,19 @@
-import React, { Component } from 'react';
-import { StyleSheet, Switch, Text, View, StatusBar } from 'react-native';
+import React, { Component } from 'react'
+import { StyleSheet, View, StatusBar } from 'react-native'
 import { getWeatherForecast } from './api'
 
-import WeatherForecast from './components/WeatherForecast'
+import Loading from './components/Loading'
+import CurrentTemperature from './components/CurrentTemperature'
 import CurrentLocationMap from './components/CurrentLocationMap'
+import WeatherForecast from './components/WeatherForecast'
+import SelectTempScale from './components/SelectTempScale'
 import commonStyles from './commonStyles'
 
 export default class App extends Component {
 
   state = {
     switchValue: false,
+    waitingAPIResponse: true,
     cityTitle: '',
     currentTemperature: '',
     selectedScale: 'celsius',
@@ -29,7 +33,7 @@ export default class App extends Component {
 
         getWeatherForecast(latitude, longitude).then(forecast => {
           console.log('res', forecast)
-          this.setState({ ...forecast, coordinates: { latitude, longitude } }, () => {
+          this.setState({ ...forecast, coordinates: { latitude, longitude }, waitingAPIResponse: false }, () => {
             console.log('coordinatesApp:', this.state.coordinates)
             this.setDisplayedScale(this.state.selectedScale)
           })
@@ -62,7 +66,6 @@ export default class App extends Component {
 
   setTodayTemperature = () => {
     const temperatureMean = this.getTemperatureMean(this.state.selectedForecast[0].minTemp, this.state.selectedForecast[0].maxTemp)
-    //const scaleSign = (this.state.selectedScale === 'celsius') ? 'C' : 'F'
     this.setState({ currentTemperature: temperatureMean })
   }
 
@@ -74,58 +77,40 @@ export default class App extends Component {
 
   render() {
     return (
+
       <View style={styles.container}>
 
-        <StatusBar translucent backgroundColor='transparent' barStyle='dark-content' />
+        <Loading
+          isVisible={this.state.waitingAPIResponse}
+          backgroundColor={'#d7d7d7'}
+          loadColor={'#eb7302'}
+          textColor={'#eb7302'}
+        />
 
-        <View style={styles.header} >
-          <Text style={{ fontSize: 25, fontFamily: commonStyles.fontFamily, color: commonStyles.colors.fontColor }}>{this.state.cityTitle}</Text>
-          <Temperature currentTemperature={this.state.currentTemperature} scaleSign={this.state.selectedScaleSign} />
-        </View>
+        <StatusBar translucent backgroundColor='transparent' barStyle='light-content' />
 
-        <CurrentLocationMap coordinates={this.state.coordinates} />
+        <CurrentTemperature
+          cityTitle={this.state.cityTitle}
+          currentTemperature={this.state.currentTemperature}
+          scaleSign={this.state.selectedScaleSign}
+        />
+
+        <CurrentLocationMap coordinates={this.state.coordinates} style={styles.map} mapOpacity={0.9} />
 
         <WeatherForecast forecastData={this.state.selectedForecast} />
 
-        <SelectTempScale label='Celsius / Fahrenheit' switchValue={this.state.switchValue} toggleSwitch={this.toggleSwitch} />
+        <SelectTempScale
+          labelLeft='Celsius'
+          labelRight='Fahrenheit'
+          switchValue={this.state.switchValue}
+          toggleSwitch={this.toggleSwitch}
+        />
+
       </View>
-    );
+
+    )
   }
 }
-
-const Temperature = (props) => (
-  props.currentTemperature ?
-    <View style={{ flexDirection: 'row' }} >
-      <Text style={{ fontSize: 30, fontFamily: commonStyles.fontFamily, color: commonStyles.colors.fontColor }}>{props.currentTemperature}°</Text>
-      <Text style={{ fontSize: 20, fontFamily: commonStyles.fontFamily, color: commonStyles.colors.fontColor, textAlignVertical: 'center' }} >{props.scaleSign}</Text>
-    </View>
-    :
-    <Text style={{ fontSize: 25, fontFamily: commonStyles.fontFamily, color: commonStyles.colors.fontColor }}>{props.currentTemperature}</Text>
-)
-
-const SelectTempScale = props => (
-  <View style={{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 0.5,
-    borderColor: 'gray',
-    borderRadius: 10,
-    paddingVertical: 5,
-    paddingHorizontal: 10
-  }}>
-    <Text style={{ fontSize: 16, fontFamily: commonStyles.fontFamily, color: commonStyles.colors.fontColor }} >{props.label}</Text>
-    <Switch
-      onValueChange={props.toggleSwitch}
-      value={props.switchValue}
-      trackColor={{
-        false: 'green',
-        true: 'blue'
-      }}
-      thumbColor='blue'
-    />
-  </View>
-)
 
 const styles = StyleSheet.create({
   container: {
@@ -135,12 +120,8 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     backgroundColor: commonStyles.colors.backgroundColor
   },
-  header: {
-    height: 100,
-    paddingVertical: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    // borderWidth: 1,
-    // borderColor: '#000'
+  map: {
+    backgroundColor: commonStyles.colors.backgroundColor2,
+    borderColor: commonStyles.colors.backgroundColor
   }
 })

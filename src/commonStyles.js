@@ -1,11 +1,12 @@
 export default {
     fontFamily: 'sans-serif-light',
-    //fontFamily: 'sans-serif-thin',
+    fontWeight: 'normal',
     colors: {
-        // backgroundColor: '#a8b8d3',
-        backgroundColor: '#a7cfff',
-        fontColor: '#000',
+        backgroundColor: '#ff8b00',
+        backgroundColor2: 'rgba(0,0,0,0.2)',
+        backgroundModal: '#BBB',
+        fontColor: '#FFF',
         darkColor: '#000',
-        ligtColor: '#FFF'
+        ligtColor: '#FFF',
     }
 }
